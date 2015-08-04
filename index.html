@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="UTF-8">
+	<title>THE MALL OF MALLS</title>
+        <link href="normalize.css" rel="stylesheet">
+        <link href="clearfix.css" rel="stylesheet">
+        <link href="style.css" rel="stylesheet">        
+    </head>
+    <body>
+        <h2>Where should I buy?<em> Simplified</em></h2>
+
+        <select name="index" class="indices">
+            <option value="Books">Books</option>
+            <option value="DVD">DVD</option>
+            <option value="Music">Music</option>
+            <option value="Apparel">Apparel</option>
+            <option value="Video">Video</option>
+            <option value="Jewelry">Jewelry</option>
+            <option value="Automotive">Automotive</option>
+            <option value="Watch">Watch</option>
+            <option value="Electronics" selected>Electronics</option>
+        </select>
+
+        <form class="submitsearch">
+            
+            <input type="text" class ="itemsearch" autofocus>
+            
+            <input type="submit" class="loadstuff" value="search">
+        </form>
+
+
+        <div id="Amazon" class="hidden store">
+            <h1>Listings from Amazon</h1>
+
+            <ul>
+                
+            </ul>
+
+        </div>
+
+        <div id="Ebay" class="hidden store">
+            <h1>Listings from eBay</h1>
+
+            <ul>
+                
+            </ul>
+
+        </div>
+
+
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/hmac-sha256.js"></script>
+        <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/components/enc-base64.js"></script>
+        <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.41.min.js"></script>
+
+        <script src="script.js"></script>
+        <script type ="text/javascript" src="amazonparse.php"></script>
+        
+    </body>
+</html>

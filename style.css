@@ -1,0 +1,91 @@
+*{
+    box-sizing:border-box;
+    background:blue;
+    color:white;
+}
+
+h1 {
+    font-size:1.8rem;
+}
+
+a {
+    text-decoration: none;
+    color:#ccc;
+    transition: all 0.25s ease;
+}
+
+.redlink{
+    color:red;
+    transition:all 0.25s ease;
+}
+
+body{
+    position:;
+}
+
+ul {
+    float:left;
+}
+
+h2 {
+    font-size:2rem;
+    text-align:center;
+}
+
+li {
+    text-decoration:none;
+    display:block;
+    margin-left: -20px;
+    position:relative;
+    height: 100px;
+    font-size:1.2rem;
+}
+
+.hidden {
+    opacity:0;
+    height:0;
+    transition: all 0.25s ease;
+    width:;
+    display:;
+}
+
+.store {
+    width:50%;
+    float:left;
+}
+
+img {
+    right:0;
+    top:0;
+    height:200px;
+    opacity:0.8;
+    display:block;
+    transition:all 0.25s ease;
+    position:absolute;
+    margin:0;
+    z-index:1;
+    
+}
+
+.pricing {
+    font-style: italic;
+    font-size:0.8rem;
+}
+
+.loadstuff{
+    border:1px solid white;
+    transition:all 0.5s ease;
+    border-radius:3px;
+}
+
+.buttonhover {
+    color:lightgreen;
+    transition:all 0.5s ease;
+    background:red;
+}
+
+.itemsearch{
+    border:1px solid white;
+    border-radius: 3px;
+}
+

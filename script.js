@@ -1,0 +1,255 @@
+//     accessKey:"AWSAccessKeyId=AKIAJOV5RN7PJ4EB2NHQ",
+//     .com assTag:"AssociateTag=anguwongdood-20",
+//.de assTag: "AssociateTag=anguswongshop-21",
+//.jp assTag: "AssociateTag=Anguswong1-22"
+// var SAKey = "F4NP/ayIOAwhhW3iYckiHN9T1rgs/loE3z/yQ6jw";
+
+// ebay                           
+// DEVID:
+// 150b4dbd-7cc1-4b0d-8521-df53fcf5bd9f
+// AppID:
+// AngusWon-948f-4cf1-836c-9b2979a7f6ac
+// CertID:
+// f493a9e2-b4ee-44b4-9bb5-c4f78282ad83
+
+// Oanda
+//36a5e23c39b830be0fdfc4c7d0381ffa-7b0fa2a136018b8db0654151e10a5dca
+
+var amazonRequest = {};
+var oanda = {};
+var ebayRequest = {};
+
+amazonRequest.url =  "https://webservices.amazon.com/onca/xml"
+ebayRequest.url = "http://open.api.ebay.com/shopping"
+oanda.url = "https://api-fxtrade.oanda.com/v1/prices"
+
+
+$(".indices").on("change",function(){
+    console.log($(".indices").val());
+    // FXrate();
+});
+
+$(".submitsearch").on("submit",function (evnt){
+    evnt.preventDefault();
+    $("ul").empty();
+    amazonRequest.encode();
+    ebayRequest.encode();
+
+});
+
+// function FXrate () {
+//     $.ajax({
+//         url:oanda.url,
+//         type:"GET",
+//         dataType:"json",
+//         data: {
+//             instruments : "CAD_USD",
+//             Authorization: "Bearer 36a5e23c39b830be0fdfc4c7d0381ffa-7b0fa2a136018b8db0654151e10a5dca"
+//         },
+//         success: function(resp){
+//             console.log(resp);
+//         }
+//     })
+// } 
+
+ebayRequest.encode = function(){
+
+    var searchAZ = $(".indices").val();
+    var keywordAZ = $(".itemsearch").val();
+    
+    
+    var sep = "&";
+    
+    var qString = {
+        appid: "appid=AngusWon-948f-4cf1-836c-9b2979a7f6ac",
+        callname: "callname=FindPopularItems",
+        callbackname:"callbackname=function",
+        requestencoding: "requestencoding=XML",
+        version: "version=517",
+        serviceversion: "service-version=1.12.0",
+        keywords: "QueryKeywords="+keywordAZ,
+        siteid: "siteid=0",
+        outputselector: "outputSelectorType=PictureURLLarge"
+    }
+    var string = qString.appid + sep + qString.callname + sep + qString.callbackname + sep + qString.requestencoding + sep + qString.version + sep + qString.keywords + sep + qString.serviceversion + sep + qString.outputselector + sep + qString.siteid;
+
+    var xml = ebayRequest.url + "?" + string;
+
+    
+
+
+    $.ajax({
+        url:"amazonparse.php",
+        type:"POST",
+        dataType:"json",
+        data:{
+            id: xml
+            
+        },
+        success: function(res){
+            console.log(res);
+            for (var i = 0; i < 10; i++){
+                var currency = "USD";
+                var title = (res.ItemArray.Item[i].Title);
+                var price = "$"+res.ItemArray.Item[i].ConvertedCurrentPrice
+                var link = (res.ItemArray.Item[i].ViewItemURLForNaturalSearch);
+                var shop = "Ebay";
+                var picture = (res.ItemArray.Item[i].GalleryURL);
+                productDisplay(shop,title,price,currency,link,picture);
+            };
+                
+        }
+        
+    })
+
+    
+};
+
+
+amazonRequest.encode = function(){
+    var searchAZ = $(".indices").val();
+    var keyword = $(".itemsearch").val();
+    var keywordAZ = keyword.replace(/ /g,"%20");
+    console.log($.now());
+    
+    
+    var date = new Date();
+    var years = date.getUTCFullYear();
+    var months = date.getUTCMonth()+1;
+    if (months < 10){
+        months = "0"+months;
+    };
+    var days = date.getUTCDate();
+    if (days < 10) {
+        days = "0"+days;
+    };
+    var hours = date.getUTCHours();
+    if (hours <10){
+        hours = "0" + hours;
+    }
+    var minutes = date.getMinutes();
+    if (minutes < 10) {
+        minutes = "0"+ minutes;
+    };
+    var seconds = date.getSeconds();
+    if (seconds < 10) {
+        seconds = "0"+ seconds;
+    };
+    var timeStamp = years+"-"+months+"-"+days+"T"+hours+"%3A"+minutes+"%3A"+seconds+"Z";
+
+    var sep = "&"
+    var qString = {
+        service:"Service=AWSECommerceService",
+        availability:"Availability=Available",
+        condition:"Condition=All",
+        responsegroup:"ResponseGroup=ItemAttributes%2COffers%2CImages",
+        operation:"Operation=ItemSearch",
+        accessKey:"AWSAccessKeyId=AKIAJOV5RN7PJ4EB2NHQ",
+        assTag:{
+            com:"AssociateTag=anguwongdood-20",
+            de:"AssociateTag=anguswongshop-21",
+            jp:"AssociateTag=Anguswong1-22"
+        },
+        sIndex:"SearchIndex="+searchAZ,
+        keyword:"Keywords="+keywordAZ,
+        timestamp:"Timestamp="+timeStamp,
+        sort: "Sort=titlerank"
+    };
+
+    var SAKey = "F4NP/ayIOAwhhW3iYckiHN9T1rgs/loE3z/yQ6jw";
+
+    var authString = qString.accessKey + sep + qString.assTag.com + sep + qString.availability + sep + qString.condition + sep + qString.keyword + sep + qString.operation + sep + qString.responsegroup + sep + qString.sIndex + sep + qString.service + sep + qString.timestamp;
+
+    // console.log(authString);
+    
+    var test_string =
+        "GET\n" +
+        "webservices.amazon.com\n" +
+        "/onca/xml\n" +
+        authString;
+
+    var signature2 = CryptoJS.HmacSHA256(test_string, SAKey);
+    var authKey = signature2.toString(CryptoJS.enc.Base64);
+    var newAuthKey = encodeURIComponent(authKey);
+    var dataFull = authString + sep + "Signature=" + newAuthKey;
+
+    //CORS stuff
+
+    console.log(amazonRequest.url+"?"+dataFull);
+
+    var xml = amazonRequest.url+"?"+dataFull;
+    amazonRequest.call(xml)
+}
+
+amazonRequest.call = function(dataSent){
+
+    $.ajax({
+        url:"amazonparse.php",
+        type:"POST",
+        dataType:"json",
+        data: {
+            id: dataSent
+        },
+        success: function(response){
+            console.log(response);           
+            for (var i = 0; i<10; i++){
+                if(response.Items.Item[i].ItemAttributes.ListPrice == 'null'){
+                    console.log("skip");
+                } else {
+                    var title = (response.Items.Item[i].ItemAttributes.Title);
+                    console.log(title);
+                    var price = (response.Items.Item[i].OfferSummary.LowestNewPrice.FormattedPrice);
+                    console.log(price);
+                    var currency = (response.Items.Item[i].OfferSummary.LowestNewPrice.CurrencyCode);
+                    console.log(currency);
+                    var link = (response.Items.Item[i].DetailPageURL);
+                    var picture = (response.Items.Item[i].LargeImage.URL);
+                    productDisplay("Amazon",title,price,currency,link,picture);
+                } 
+                
+               
+                
+            }
+        }
+    });
+}
+
+
+function productDisplay(shop,title,price,currency,link,picture){
+    
+    var $listitem = $("<li>");
+    var $title = $("<a>");
+    $title.text(title);
+    $title.attr("href",link)
+    var $price = $("<p>");
+    $price.text(currency + " " + price).addClass("pricing");
+    var $image = $("<img>");
+    $image.attr("src",picture).addClass("hidden");
+    $listitem.append($title,$price,$image);
+    $("#"+shop+" ul").append($listitem);
+    $("#"+shop).removeClass("hidden");
+    $("li").on("mouseover", function(){
+        $(this).find("img").removeClass("hidden");
+    })
+    $("a").on("mouseover",function(){
+        $(this).find("a").addClass("redlink");
+    })
+    
+    $("li").on("mouseout",function(){
+        $(this).find("img").addClass("hidden");
+    })
+    $("a").on("mouseout",function(){
+        $(this).find("a").removeClass("redlink");
+    })
+    
+}
+
+
+
+$("input").on("mouseover",function(){
+    $(this).addClass("buttonhover");
+})
+
+$("input").on("mouseout",function(){
+    $(this).removeClass("buttonhover");
+})
