@@ -5,7 +5,7 @@
 }
 
 body{
-    background:#34D;
+    background:#77D;
     text-align:center;
     border-bottom:none;
 }
@@ -15,7 +15,6 @@ input{
 
 h1 {
     font-size:1.8rem;
-    background:black;
 }
 
 a {
@@ -37,7 +36,6 @@ a :hover{
 
 ul {
     float:left;
-    background:black;
     margin:0;
     padding:0;
     width:100%;
@@ -55,7 +53,6 @@ li {
     position:relative;
     height: 100px;
     font-size:1.2rem;
-    background:black;
     border-top:2px solid white;
     width:100%;
 }
@@ -79,7 +76,7 @@ li {
 
 .store {
     float:left;
-    background:black;
+    background:rgba(0,0,0,0.3);
     border:2px solid white;
 }
 

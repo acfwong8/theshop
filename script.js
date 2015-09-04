@@ -126,6 +126,7 @@ $(".submitsearch").on("submit",function (evnt){
     for (var m = 0; m < TLDarray.length; m++){
         amazonSearches(TLDarray[m], firstCounter);
     }
+    scrollChecker(TLDarray,firstCounter);
     var width = 1/TLDarray.length*100;
     var widthPercent = width+'%'
     // console.log(widthPercent);
@@ -152,14 +153,19 @@ function amazonSearches(TLD,firstCounter) {
     var USPair = FXpair.setPair("USD", currTwo);
     rateConvert.setConvert(userPair.currency, userPair.counter);
     amazonRequest.encode(TLD,userPair.currency,firstCounter)
+
+}
+
+function scrollChecker(TLDarray,firstCounter){
     window.onscroll = function(ev){
         if((window.innerHeight + window.scrollY) >= $(document).height()){
             firstCounter++;
-            
-            amazonRequest.encode(TLD,userPair.currency,firstCounter);
+            for (var m = 0; m < TLDarray.length; m++){
+                // amazonRequest.encode(TLD,userPair.currency,firstCounter);
+                amazonSearches(TLDarray[m],firstCounter);
+            }
         }
     }
-
 }
 
 function FXsymbol(){
@@ -316,7 +322,7 @@ amazonRequest.encode = function(TLD,currPair,firstCounter){
     var qString = {
         service:"Service=AWSECommerceService",
         availability:"Availability=Available",
-        condition:"Condition=All",
+        condition:"Condition=New",
         itempage:"ItemPage="+firstCounter,
         responsegroup:"ResponseGroup=ItemAttributes%2COffers%2CImages",
         operation:"Operation=ItemSearch",
@@ -351,7 +357,7 @@ amazonRequest.encode = function(TLD,currPair,firstCounter){
         }
     };
 
-    var authString = eval("qString.accessKey.com") + sep + eval("qString.assTag.com") + sep + qString.availability + sep + qString.itempage + sep + qString.keyword + sep + qString.operation + sep + qString.responsegroup + sep + qString.sIndex + sep + qString.service + sep + qString.timestamp;
+    var authString = eval("qString.accessKey.com") + sep + eval("qString.assTag.com") + sep + qString.condition + sep + qString.itempage + sep + qString.keyword + sep + qString.operation + sep + qString.responsegroup + sep + qString.sIndex + sep + qString.service + sep + qString.timestamp;
 
     // console.log(authString);
     
@@ -419,9 +425,9 @@ amazonRequest.call = function(dataSent,TLD,currPair,firstCounter){
                     
                     var link = (response.Items.Item[i].DetailPageURL);
                     var picture = "";
-                    if(TLD == "com"){
-                        picture = (response.Items.Item[i].LargeImage.URL);
-                    }else if(TLD == "co.jp" || TLD == "de"){
+                    // if(TLD == "com"){
+                    //     picture = (response.Items.Item[i].LargeImage.URL);
+                    if(response.Items.Item[i].ImageSets){
                         if(response.Items.Item[i].ImageSets.ImageSet.length > 1){
                             picture = (response.Items.Item[i].ImageSets.ImageSet[0].LargeImage.URL);
                         } else {
