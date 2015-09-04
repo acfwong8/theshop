@@ -1,7 +1,9 @@
 //     accessKey:"AWSAccessKeyId=AKIAJOV5RN7PJ4EB2NHQ",
 //     .com assTag:"AssociateTag=anguwongdood-20",
-//.de assTag: "AssociateTag=anguswongshop-21",
-//.jp assTag: "AssociateTag=Anguswong1-22"
+//.de assTag: "AssociateTag=anguwongdood-21",
+//.jp assTag: "AssociateTag=anguswong105-22"
+//.cn assTag: "AssociateTag=anguswong-23"
+//.ca assTag: "AssociateTag=anguswongport-20"
 // var SAKey = "F4NP/ayIOAwhhW3iYckiHN9T1rgs/loE3z/yQ6jw";
 
 // ebay                           
@@ -15,42 +17,208 @@
 // Oanda
 //36a5e23c39b830be0fdfc4c7d0381ffa-7b0fa2a136018b8db0654151e10a5dca
 
+
 var amazonRequest = {};
 var oanda = {};
 var ebayRequest = {};
+var easypost = {};
 
-amazonRequest.url =  "https://webservices.amazon.com/onca/xml"
-ebayRequest.url = "http://open.api.ebay.com/shopping"
-oanda.url = "https://api-fxtrade.oanda.com/v1/prices"
+
+easypost.key = "PsOHuRJIvdYWGJFDkOZDAQ";
+// amazonRequest.url =  "http://webservices.amazon."+TLD+"/onca/xml";
+ebayRequest.url = "http://open.api.ebay.com/shopping";
+oanda.url = "https://api-fxpractice.oanda.com/v1/";
+easypost.url = "https://api.easypost.com/v2/shipments";
+var FXgetter = loadFX();
+$(document).ready(function(){
+    
+    FXsymbol();
+})
+
+function loadFX(){
+    var FXarray = [];
+    return {
+        getFX: function(){
+            return FXarray;
+        },
+        setFX: function(key){
+            FXarray = key;
+            return FXarray;
+        }
+    };
+
+}
+
+var FXpair = getPair();
+function getPair(){
+    var thePair ="";
+    return{
+        getPair: function(){
+            return thePair;
+        },
+        setPair: function(currOne, currTwo){
+            for (var i = 0; i < FXgetter.getFX().length; i++ ){
+                if(FXgetter.getFX().indexOf(currOne+"_"+currTwo) > -1){
+                    thePair = currOne+"_"+currTwo;
+                    return {
+                        currency:thePair,
+                        counter:0
+                    };
+                } else if (FXgetter.getFX().indexOf(currTwo+"_"+currOne) > -1){
+                    thePair = currTwo+"_"+currOne;
+                    return{
+                        currency:thePair,
+                        counter:1
+                    };
+                } else {
+                    thePair = "WTICO_USD";
+                    $('.currency').empty();
+                    return{
+                        currency:thePair,
+                        counter:2
+                    };
+                }
+            }
+        }
+    }
+}
 
 
 $(".indices").on("change",function(){
     console.log($(".indices").val());
     // FXrate();
 });
+var userRate = $('.currency').val().toUpperCase();
+var rateInit = {
+    com:'USD',
+    de:'EUR',
+    ca:'CAD',
+    co:{
+        jp:'JPY',
+        uk:'GBP'
+    }
+}
+
+var boxes = checkedBox();
+function checkedBox (){
+    var checkedArray = [];
+    return{
+        setBoxes:function(checkbox){
+            checkedArray = [];
+            var a = $(checkbox).length;
+            for (var i = 1; i <= a; i++){
+                if($(checkbox+i).prop('checked')){
+                    checkedArray.push($(checkbox+i+':checked').val());
+                }
+            }
+            // checkedArray.splice(null);
+            return checkedArray;
+        }
+    }
+}
 
 $(".submitsearch").on("submit",function (evnt){
     evnt.preventDefault();
-    $("ul").empty();
-    amazonRequest.encode();
-    ebayRequest.encode();
+    $("#stores").empty();
+    ebayRequest.url = "http://open.api.ebay.com/shopping"
+    oanda.url = "https://api-fxpractice.oanda.com/v1/"
+    TLDarray = boxes.setBoxes('.checkbox');
+    for (var m = 0; m < TLDarray.length; m++){
+        amazonSearches(TLDarray[m]);
+    }
+    var width = 1/TLDarray.length*100;
+    var widthPercent = width+'%'
+    console.log(widthPercent);
+    $('.store').css({
+        'width':widthPercent
+    })
+    var currOne = eval("rateInit."+"com");
+    var currTwo = $('.currency').val().toUpperCase();
+    var theCurrency = FXgetter.getFX();
+    var userPair = FXpair.setPair(currOne, currTwo);
+    var USPair = FXpair.setPair("USD", currTwo);
+    if($('.ebay').prop('checked')){
+        ebayRequest.encode();
+    }
+
 
 });
 
-// function FXrate () {
-//     $.ajax({
-//         url:oanda.url,
-//         type:"GET",
-//         dataType:"json",
-//         data: {
-//             instruments : "CAD_USD",
-//             Authorization: "Bearer 36a5e23c39b830be0fdfc4c7d0381ffa-7b0fa2a136018b8db0654151e10a5dca"
-//         },
-//         success: function(resp){
-//             console.log(resp);
-//         }
-//     })
-// } 
+function amazonSearches(TLD) {
+    amazonRequest.url =  "https://webservices.amazon."+TLD+"/onca/xml"
+    var currOne = eval("rateInit."+TLD)
+    var currTwo = $('.currency').val().toUpperCase();
+    var theCurrency = FXgetter.getFX();
+    var userPair = FXpair.setPair(currOne, currTwo);
+    var USPair = FXpair.setPair("USD", currTwo);
+    rateConvert.setConvert(userPair.currency, userPair.counter);
+    amazonRequest.encode(TLD,userPair.currency)
+
+}
+
+function FXsymbol(){
+    var FXarray=[];
+    $.ajax({
+        url:oanda.url+'instruments',        
+        type:"GET",
+        dataType:"json",
+        data:{
+            accountId:'341013'
+        },
+        headers:{
+            Authorization: "Bearer 36a5e23c39b830be0fdfc4c7d0381ffa-7b0fa2a136018b8db0654151e10a5dca"            
+        },
+        success:function(resp){
+            for(var i=0; i<resp.instruments.length;i++){
+                FXarray.push(resp.instruments[i].instrument);
+            }
+            FXgetter.setFX(FXarray);
+        }
+    });
+
+           
+      
+}
+
+var rateConvert = FXrate();
+function FXrate () {
+    var conversion = {};
+    var rate = 0;
+    return{
+        setConvert:function(currencyOne, countOne){
+            $.ajax({
+                url:oanda.url+'prices',
+                type:"GET",
+                dataType:"json",
+                data: {
+                    instruments: currencyOne
+
+                },
+                headers:{
+                    Authorization: "Bearer 36a5e23c39b830be0fdfc4c7d0381ffa-7b0fa2a136018b8db0654151e10a5dca"            
+                }
+            }).done(function(resp){
+                console.log(resp);
+                var rate2 = resp.prices[0].ask;
+                if (countOne === 0){
+                    rate = rate2;
+                    conversion[currencyOne] = rate;
+                } else if (countOne === 1){
+                    rate = 1/rate2;
+                    conversion[currencyOne] = rate;
+                } else {
+                    rate = 1;
+                    conversion[currencyOne] = rate;              
+                }
+            })
+            return conversion;                             
+        },
+        getConvert:function(){
+            return conversion;
+        }
+    }
+
+}
 
 ebayRequest.encode = function(){
 
@@ -91,11 +259,12 @@ ebayRequest.encode = function(){
             for (var i = 0; i < 10; i++){
                 var currency = "USD";
                 var title = (res.ItemArray.Item[i].Title);
-                var price = "$"+res.ItemArray.Item[i].ConvertedCurrentPrice
+                var price = res.ItemArray.Item[i].ConvertedCurrentPrice
                 var link = (res.ItemArray.Item[i].ViewItemURLForNaturalSearch);
                 var shop = "Ebay";
                 var picture = (res.ItemArray.Item[i].GalleryURL);
-                productDisplay(shop,title,price,currency,link,picture);
+                var convprice = Math.round(price*currencyChange*100)/100;
+                productDisplay(shop,title,price,convprice,currency,$('.currency').val().toUpperCase(),link,picture,TLD);
             };
                 
         }
@@ -106,7 +275,7 @@ ebayRequest.encode = function(){
 };
 
 
-amazonRequest.encode = function(){
+amazonRequest.encode = function(TLD,currPair){
     var searchAZ = $(".indices").val();
     var keyword = $(".itemsearch").val();
     var keywordAZ = keyword.replace(/ /g,"%20");
@@ -144,11 +313,22 @@ amazonRequest.encode = function(){
         condition:"Condition=All",
         responsegroup:"ResponseGroup=ItemAttributes%2COffers%2CImages",
         operation:"Operation=ItemSearch",
-        accessKey:"AWSAccessKeyId=AKIAJOV5RN7PJ4EB2NHQ",
+        accessKey:{
+            com:"AWSAccessKeyId=AKIAJOV5RN7PJ4EB2NHQ",
+            co:{
+                uk:"AWSAccessKeyId=AKIAJRQLAJXRD7Z5L2CA"
+            }
+        },
         assTag:{
-            com:"AssociateTag=anguwongdood-20",
-            de:"AssociateTag=anguswongshop-21",
-            jp:"AssociateTag=Anguswong1-22"
+            // com:"AssociateTag=anguwongdood-20",
+            com:"AssociateTag=8558-6951-2531",
+            de:"AssociateTag=anguswongdood-21",
+            co:{
+                jp:"AssociateTag=anguswong105-22",
+                uk:"AssociateTag=anguswongport-21"
+            },
+            ca:"AssociateTag=anguswongport-20",
+            cn:"AssociateTag=anguswong-23"
         },
         sIndex:"SearchIndex="+searchAZ,
         keyword:"Keywords="+keywordAZ,
@@ -156,32 +336,50 @@ amazonRequest.encode = function(){
         sort: "Sort=titlerank"
     };
 
-    var SAKey = "F4NP/ayIOAwhhW3iYckiHN9T1rgs/loE3z/yQ6jw";
+    console.log(eval("qString.assTag."+TLD))
+    var SAKey = {
+        com:"F4NP/ayIOAwhhW3iYckiHN9T1rgs/loE3z/yQ6jw",
+        co:{
+            uk:"m9dOx2+53meAjQ3BwXmDseekmxJWcPez0MtstYMo"
+        }
+    };
 
-    var authString = qString.accessKey + sep + qString.assTag.com + sep + qString.availability + sep + qString.condition + sep + qString.keyword + sep + qString.operation + sep + qString.responsegroup + sep + qString.sIndex + sep + qString.service + sep + qString.timestamp;
+    var authString = eval("qString.accessKey.com") + sep + eval("qString.assTag.com") + sep + qString.availability + sep + qString.condition + sep + qString.keyword + sep + qString.operation + sep + qString.responsegroup + sep + qString.sIndex + sep + qString.service + sep + qString.timestamp;
 
     // console.log(authString);
     
     var test_string =
         "GET\n" +
-        "webservices.amazon.com\n" +
+        "webservices.amazon."+TLD+"\n" +
         "/onca/xml\n" +
         authString;
+    // console.log(eval("SAKey."+TLD));
 
-    var signature2 = CryptoJS.HmacSHA256(test_string, SAKey);
+    var signature2 = CryptoJS.HmacSHA256(test_string, eval("SAKey.com"));
     var authKey = signature2.toString(CryptoJS.enc.Base64);
     var newAuthKey = encodeURIComponent(authKey);
     var dataFull = authString + sep + "Signature=" + newAuthKey;
 
-    //CORS stuff
 
     console.log(amazonRequest.url+"?"+dataFull);
 
     var xml = amazonRequest.url+"?"+dataFull;
-    amazonRequest.call(xml)
+    amazonRequest.call(xml,TLD,currPair)
 }
 
-amazonRequest.call = function(dataSent){
+amazonRequest.call = function(dataSent,TLD,currPair){
+    var TLD2 = "";
+    if (TLD == 'co.jp' || TLD == 'co.uk'){
+        TLD2 = TLD.replace('.','')
+    } else {
+        TLD2 = TLD;
+    }
+    var $div = $("<div>").attr('id','amazon'+TLD2).addClass('store');
+    var $h1 = $("<h1>").text('Listings from Amazon'+'.'+TLD);
+    var $ul = $("<ul>");
+    $div.append($h1, $ul);
+    $('#stores').append($div);
+    $div.hide();
 
     $.ajax({
         url:"amazonparse.php",
@@ -193,41 +391,57 @@ amazonRequest.call = function(dataSent){
         success: function(response){
             console.log(response);           
             for (var i = 0; i<10; i++){
-                if(response.Items.Item[i].ItemAttributes.ListPrice == 'null'){
-                    console.log("skip");
-                } else {
+                if(response.Items.Item[i].OfferSummary.LowestNewPrice.FormattedPrice){
+
+
                     var title = (response.Items.Item[i].ItemAttributes.Title);
-                    console.log(title);
-                    var price = (response.Items.Item[i].OfferSummary.LowestNewPrice.FormattedPrice);
-                    console.log(price);
+                    // console.log(title); 
+                    var price = (response.Items.Item[i].OfferSummary.LowestNewPrice.Amount);
+                    if(TLD !== "co.jp"){
+                        price = price/100;
+                    }
+                    // console.log(price);
                     var currency = (response.Items.Item[i].OfferSummary.LowestNewPrice.CurrencyCode);
-                    console.log(currency);
+                    
                     var link = (response.Items.Item[i].DetailPageURL);
-                    var picture = (response.Items.Item[i].LargeImage.URL);
-                    productDisplay("Amazon",title,price,currency,link,picture);
-                } 
-                
-               
+                    var picture = "";
+                    if(TLD == "com"){
+                        picture = (response.Items.Item[i].LargeImage.URL);
+                    }else if(TLD == "co.jp" || TLD == "de"){
+                        if(response.Items.Item[i].ImageSets.ImageSet.length > 1){
+                            picture = (response.Items.Item[i].ImageSets.ImageSet[0].LargeImage.URL);
+                        } else {
+                            picture = (response.Items.Item[i].ImageSets.ImageSet.LargeImage.URL);
+                        }
+                    }
+                    var convprice = Math.round(Number(price*rateConvert.getConvert()[currPair])*100)/100;
+
+                    productDisplay("amazon",title,price,convprice,currency,$('.currency').val().toUpperCase(),link,picture,TLD2);
+                } else {
+                    console.log("skip");                
+                }
                 
             }
         }
     });
+    $div.fadeIn(800);
 }
 
 
-function productDisplay(shop,title,price,currency,link,picture){
-    
+function productDisplay(shop,title,price,convprice,currency,convcurrency,link,picture,TLD){
+
     var $listitem = $("<li>");
     var $title = $("<a>");
     $title.text(title);
     $title.attr("href",link)
     var $price = $("<p>");
-    $price.text(currency + " " + price).addClass("pricing");
+    $price.text(currency + " " + price + "    " + convcurrency + " " + convprice).addClass("pricing");
     var $image = $("<img>");
     $image.attr("src",picture).addClass("hidden");
     $listitem.append($title,$price,$image);
-    $("#"+shop+" ul").append($listitem);
-    $("#"+shop).removeClass("hidden");
+    $("#"+shop+TLD+" ul").append($listitem).hide().fadeIn(800);
+    // $(this).attr('style','background-image: url('+picture+')')
+    // $("#"+shop).removeClass("hidden");
     $("li").on("mouseover", function(){
         $(this).find("img").removeClass("hidden");
     })
