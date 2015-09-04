@@ -5,12 +5,12 @@
 }
 
 body{
-    background:blue;
+    background:#34D;
     text-align:center;
     border-bottom:none;
 }
 input{
-    background:blue;
+    background:none;
 }
 
 h1 {
@@ -27,7 +27,6 @@ a {
     
 }
 a :hover{
-    color:green;
 }
 
 .redlink{
@@ -47,7 +46,6 @@ ul {
 h2 {
     font-size:2rem;
     text-align:center;
-    background:blue;
 }
 
 li {
@@ -111,7 +109,6 @@ img {
 }
 
 .buttonhover {
-    color:lightgreen;
     transition:all 0.5s ease;
     background:red;
 }
@@ -131,8 +128,10 @@ label{
     border-radius:3px;
     margin:0 1%;
     padding:0 3px;
+    transition: all 0.5s ease;
 }
 
 .checkbox:checked + label{
     background:red;
+    transition: all 0.5s ease;
 }

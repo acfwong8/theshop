@@ -72,7 +72,6 @@ function getPair(){
                     };
                 } else {
                     thePair = "WTICO_USD";
-                    $('.currency').empty();
                     return{
                         currency:thePair,
                         counter:2
@@ -123,12 +122,13 @@ $(".submitsearch").on("submit",function (evnt){
     ebayRequest.url = "http://open.api.ebay.com/shopping"
     oanda.url = "https://api-fxpractice.oanda.com/v1/"
     TLDarray = boxes.setBoxes('.checkbox');
+    var firstCounter = 1;
     for (var m = 0; m < TLDarray.length; m++){
-        amazonSearches(TLDarray[m]);
+        amazonSearches(TLDarray[m], firstCounter);
     }
     var width = 1/TLDarray.length*100;
     var widthPercent = width+'%'
-    console.log(widthPercent);
+    // console.log(widthPercent);
     $('.store').css({
         'width':widthPercent
     })
@@ -141,10 +141,9 @@ $(".submitsearch").on("submit",function (evnt){
         ebayRequest.encode();
     }
 
-
 });
 
-function amazonSearches(TLD) {
+function amazonSearches(TLD,firstCounter) {
     amazonRequest.url =  "https://webservices.amazon."+TLD+"/onca/xml"
     var currOne = eval("rateInit."+TLD)
     var currTwo = $('.currency').val().toUpperCase();
@@ -152,7 +151,14 @@ function amazonSearches(TLD) {
     var userPair = FXpair.setPair(currOne, currTwo);
     var USPair = FXpair.setPair("USD", currTwo);
     rateConvert.setConvert(userPair.currency, userPair.counter);
-    amazonRequest.encode(TLD,userPair.currency)
+    amazonRequest.encode(TLD,userPair.currency,firstCounter)
+    window.onscroll = function(ev){
+        if((window.innerHeight + window.scrollY) >= $(document).height()){
+            firstCounter++;
+            
+            amazonRequest.encode(TLD,userPair.currency,firstCounter);
+        }
+    }
 
 }
 
@@ -275,7 +281,7 @@ ebayRequest.encode = function(){
 };
 
 
-amazonRequest.encode = function(TLD,currPair){
+amazonRequest.encode = function(TLD,currPair,firstCounter){
     var searchAZ = $(".indices").val();
     var keyword = $(".itemsearch").val();
     var keywordAZ = keyword.replace(/ /g,"%20");
@@ -311,6 +317,7 @@ amazonRequest.encode = function(TLD,currPair){
         service:"Service=AWSECommerceService",
         availability:"Availability=Available",
         condition:"Condition=All",
+        itempage:"ItemPage="+firstCounter,
         responsegroup:"ResponseGroup=ItemAttributes%2COffers%2CImages",
         operation:"Operation=ItemSearch",
         accessKey:{
@@ -344,7 +351,7 @@ amazonRequest.encode = function(TLD,currPair){
         }
     };
 
-    var authString = eval("qString.accessKey.com") + sep + eval("qString.assTag.com") + sep + qString.availability + sep + qString.condition + sep + qString.keyword + sep + qString.operation + sep + qString.responsegroup + sep + qString.sIndex + sep + qString.service + sep + qString.timestamp;
+    var authString = eval("qString.accessKey.com") + sep + eval("qString.assTag.com") + sep + qString.availability + sep + qString.itempage + sep + qString.keyword + sep + qString.operation + sep + qString.responsegroup + sep + qString.sIndex + sep + qString.service + sep + qString.timestamp;
 
     // console.log(authString);
     
@@ -364,22 +371,29 @@ amazonRequest.encode = function(TLD,currPair){
     console.log(amazonRequest.url+"?"+dataFull);
 
     var xml = amazonRequest.url+"?"+dataFull;
-    amazonRequest.call(xml,TLD,currPair)
+    amazonRequest.call(xml,TLD,currPair,firstCounter)
 }
 
-amazonRequest.call = function(dataSent,TLD,currPair){
+amazonRequest.call = function(dataSent,TLD,currPair,firstCounter){
     var TLD2 = "";
     if (TLD == 'co.jp' || TLD == 'co.uk'){
         TLD2 = TLD.replace('.','')
     } else {
         TLD2 = TLD;
     }
-    var $div = $("<div>").attr('id','amazon'+TLD2).addClass('store');
-    var $h1 = $("<h1>").text('Listings from Amazon'+'.'+TLD);
-    var $ul = $("<ul>");
-    $div.append($h1, $ul);
-    $('#stores').append($div);
-    $div.hide();
+
+    if(firstCounter === 1){
+        var $div = $("<div>").attr('id','amazon'+TLD2).addClass('store');
+        var $h1 = $("<h1>").text('Listings from Amazon'+'.'+TLD);
+        $div.append($h1);
+        $('#stores').append($div);
+        $div.hide();
+
+    }
+    console.log(firstCounter);
+    var $ul = $("<ul>").addClass('listpage'+firstCounter);
+    $('#amazon'+TLD2).append($ul);
+    
 
     $.ajax({
         url:"amazonparse.php",
@@ -391,7 +405,7 @@ amazonRequest.call = function(dataSent,TLD,currPair){
         success: function(response){
             console.log(response);           
             for (var i = 0; i<10; i++){
-                if(response.Items.Item[i].OfferSummary.LowestNewPrice.FormattedPrice){
+                if(response.Items.Item[i].OfferSummary.LowestNewPrice){
 
 
                     var title = (response.Items.Item[i].ItemAttributes.Title);
@@ -416,7 +430,7 @@ amazonRequest.call = function(dataSent,TLD,currPair){
                     }
                     var convprice = Math.round(Number(price*rateConvert.getConvert()[currPair])*100)/100;
 
-                    productDisplay("amazon",title,price,convprice,currency,$('.currency').val().toUpperCase(),link,picture,TLD2);
+                    productDisplay("amazon",title,price,convprice,currency,$('.currency').val().toUpperCase(),link,picture,TLD2,firstCounter);
                 } else {
                     console.log("skip");                
                 }
@@ -424,11 +438,13 @@ amazonRequest.call = function(dataSent,TLD,currPair){
             }
         }
     });
-    $div.fadeIn(800);
+    if(firstCounter === 1){
+        $div.fadeIn(800);
+    }
 }
 
 
-function productDisplay(shop,title,price,convprice,currency,convcurrency,link,picture,TLD){
+function productDisplay(shop,title,price,convprice,currency,convcurrency,link,picture,TLD,firstCounter){
 
     var $listitem = $("<li>");
     var $title = $("<a>");
@@ -439,7 +455,7 @@ function productDisplay(shop,title,price,convprice,currency,convcurrency,link,pi
     var $image = $("<img>");
     $image.attr("src",picture).addClass("hidden");
     $listitem.append($title,$price,$image);
-    $("#"+shop+TLD+" ul").append($listitem).hide().fadeIn(800);
+    $("#"+shop+TLD+" .listpage"+firstCounter).append($listitem).hide().fadeIn(800);
     // $(this).attr('style','background-image: url('+picture+')')
     // $("#"+shop).removeClass("hidden");
     $("li").on("mouseover", function(){
