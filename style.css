@@ -23,6 +23,7 @@ a {
     transition: all 0.25s ease;
     font-size:1rem;
     height:5vh;
+    overflow:scroll;
     
 }
 a :hover{
@@ -115,9 +116,11 @@ img {
     border-radius: 3px;
 }
 
-.checkbox{
+.checkbox, .ebaycheck{
     display:none;
 }
+
+
 
 
 label{
@@ -125,10 +128,22 @@ label{
     border-radius:3px;
     margin:0 1%;
     padding:0 3px;
+    box-shadow:10px 10px 10px black;
     transition: all 0.5s ease;
 }
 
-.checkbox:checked + label{
+.regionhover{
+    background:rgba(0,0,0,0.5);
+    box-shadow:5px 5px 5px black;
+}
+
+.checkbox:checked + label, .ebaycheck:checked + label{
     background:red;
+    box-shadow:none;
     transition: all 0.5s ease;
+}
+
+.indices {
+    background:none;
+    color:#ccc;
 }
