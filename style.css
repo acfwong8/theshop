@@ -47,21 +47,36 @@ h2 {
     text-align:center;
 }
 
+h1,h2 {
+    font-family:'Bad Script', cursive;
+}
+
+form {
+    font-family:'PT Sans Narrow', sans-serif;
+}
+
 li {
     text-decoration:none;
     display:block;
     margin-left:2px;
-    position:relative;
-    height: 100px;
+    height: auto;
     font-size:1.2rem;
-    border-top:2px solid white;
+    /* border-top:2px solid white; */
     width:100%;
+    margin-bottom:5%;
+    font-family:'PT Sans Narrow', sans-serif;
+    transition:all 0.5s ease;
+}
+
+.titlediv{
+    height:5vh;
+    overflow:hidden;
 }
 
 .hidden {
     opacity:0;
     height:0;
-    transition: all 0.25s ease;
+    transition: all 0.5s ease;
     width:;
     display:;
 }
@@ -81,17 +96,31 @@ li {
     border:2px solid white;
 }
 
-img {
-    right:0;
-    top:0;
+#stores{
     height:200px;
+}
+
+.imagediv {
+    border-radius:50%;
+    height:auto;
+    width:50%;
+    padding-top:50%;
+    overflow:hidden;
+    background:white;
+    margin:0 auto;
+    position:relative;
+}
+
+img {
+    width:70%;
     opacity:0.8;
     display:block;
     transition:all 0.25s ease;
-    position:absolute;
-    margin:0;
     z-index:1;
-    
+    margin:0 15%;
+    position:absolute;
+    top:50%;
+    transform:translate(0,-50%);
 }
 
 .pricing {
@@ -146,4 +175,10 @@ label{
 .indices {
     background:none;
     color:#ccc;
+}
+
+.extraspacing{
+    height:100px;
+    display:block;
+    background:green;
 }

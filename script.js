@@ -269,6 +269,10 @@ function ebayRequestCode(firstCounter){
         $div.hide();
     }
 
+    if(firstCounter === 1){
+        $div.fadeIn(800);
+    }
+
     var $ul = $("<ul>").addClass('storelist listpage'+firstCounter);
     $('#ebaycom').append($ul);
 
@@ -306,9 +310,10 @@ function ebayRequestCode(firstCounter){
                 serviceversion: "service-version=1.12.0",
                 keywords: "QueryKeywords="+keywordAZ,
                 siteid: "siteid=0",
-                outputselector: "outputSelectorType=PictureURLLarge"
+                outputselector: "outputSelectorType=PictureURLLarge",
+                entriesPerPage: "pageNumber=22"
             }
-            var string = qString.appid + sep + qString.callname + sep + qString.callbackname + sep + qString.requestencoding + sep + qString.version + sep + qString.keywords + sep + qString.serviceversion + sep + qString.outputselector + sep + qString.siteid;
+            var string = qString.appid + sep + qString.callname + sep + qString.callbackname + sep + qString.requestencoding + sep + qString.version + sep + qString.keywords + sep + qString.serviceversion + sep + qString.outputselector + sep + qString.siteid + sep + qString.entriesPerPage;
 
             var xml = ebayRequest.url + "?" + string;
             
@@ -323,7 +328,7 @@ function ebayRequestCode(firstCounter){
                 success: function(res){
                     console.log(res);
                     
-                    for (var i = 0; i < 20; i++){
+                    for (var i = 0; i < 100; i++){
                         var currency = "USD";
                         var title = (res.ItemArray.Item[i].Title);
                         var price = res.ItemArray.Item[i].ConvertedCurrentPrice
@@ -331,6 +336,7 @@ function ebayRequestCode(firstCounter){
                         var shop = "ebay";
                         var picture = (res.ItemArray.Item[i].GalleryURL);
                         // var convprice = Math.round(price*currencyChange*100)/100;
+                        var convcurrency = $('.currency').val().toUpperCase();
                         var convprice = Math.round(Number(price*rateConvert.getConvert()["USD_CAD"])*100)/100;
                         itemArray.push({
                             'currency': currency,
@@ -339,7 +345,8 @@ function ebayRequestCode(firstCounter){
                             'link': link,
                             'shop': shop,
                             'picture':picture,
-                            'convprice':convprice
+                            'convprice':convprice,
+                            'convcurrency':convcurrency
                         });
 
                         // productDisplay(shop,title,price,convprice,currency,$('.currency').val().toUpperCase(),link,picture,'com',firstCounter);
@@ -357,9 +364,7 @@ function ebayRequestCode(firstCounter){
         }
         
     }
-    if(firstCounter === 1){
-        $div.fadeIn(800);
-    }
+
 
     
 };
@@ -532,10 +537,10 @@ amazonRequest.call = function(dataSent,TLD,currPair,firstCounter){
                         picture = (response.Items.Item[i].ImageSets.ImageSet.LargeImage.URL);
                     }
                 }
-                
+                var convcurrency = $('.currency').val().toUpperCase();
                 var convprice = Math.round(Number(price*rateConvert.getConvert()[currPair])*100)/100;
 
-                productDisplay("amazon",title,price,convprice,currency,$('.currency').val().toUpperCase(),link,picture,TLD2,firstCounter);                
+                productDisplay("amazon",title,price,convprice,currency,convcurrency,link,picture,TLD2,firstCounter);                
             }
         }
     });
@@ -577,27 +582,32 @@ $(".submitsearch").on("submit",function (evnt){
         // },function(reason){
         //     console.log(reason);
         // });
-
         var completed = setInterval(function(){
             var a = ebayCall.getItems();
             if (a.length !== 0){
                 console.log(a);
-                console.log(2);
-                stopcheck();
+                for (var i = 0; i < firstCounter*10; i++){
+                    console.log(a[i].shop);
+                    setTimeout(function(){
+                        productDisplay(a[i].shop,a[i].title,a[i].price,a[i].convprice,a[i].currency,a[i].convcurrency,a[i].link,a[i].picture,'com',firstCounter);
+                        
+                    
+                    },500);
+                }
+                stopcheck(completed);
                 return a;
 
             };
-        },10h);
+        },10);
 
-        function stopcheck(){
-            clearInterval(completed);
+        function stopcheck(varname){
+            clearInterval(varname);
         };
-        
-        // var a = ebayRequest.encode(firstCounter).setItems();
 
-    } else {
+    }else {
         ebay = 0;
     };
+    
     scrollChecker(TLDarray,firstCounter);
     var width = 1/(TLDarray.length + ebay)*100;
     var widthPercent = width+'%'
@@ -625,21 +635,29 @@ function productDisplay(shop,title,price,convprice,currency,convcurrency,link,pi
     var $price = $("<p>");
     $price.text(currency + " " + price + "    " + convcurrency + " " + convprice).addClass("pricing");
     var $image = $("<img>");
-    $image.attr("src",picture).addClass("hidden");
-    $listitem.append($title,$price,$image).addClass('shopitems');
-    $("#"+shop+TLD+" .listpage"+firstCounter).append($listitem).hide().fadeIn(800);
+    var $imagediv = $("<div>");
+    var $titlediv = $("<div>");
+    $titlediv.append($title).addClass('titlediv');
+    $imagediv.addClass('imagediv')
+    $image.attr("src",picture).addClass("");
+    $imagediv.append($image);
+    $listitem.append($imagediv,$titlediv,$price).addClass('shopitems hidden');
+    $("#"+shop+TLD+" .listpage"+firstCounter).append($listitem);
+    setTimeout(function(){
+        $listitem.removeClass('hidden');
+    },500);
     // $(this).attr('style','background-image: url('+picture+')')
     // $("#"+shop).removeClass("hidden");
-    $("li").on("mouseover", function(){
-        $(this).find("img").removeClass("hidden");
-    })
+    // $("li").on("mouseover", function(){
+    //     $(this).find("img").removeClass("hidden");
+    // })
     $("a").on("mouseover",function(){
         $(this).find("a").addClass("redlink");
     })
     
-    $("li").on("mouseout",function(){
-        $(this).find("img").addClass("hidden");
-    })
+    // $("li").on("mouseout",function(){
+    //     $(this).find("img").addClass("hidden");
+    // })
     $("a").on("mouseout",function(){
         $(this).find("a").removeClass("redlink");
     })
