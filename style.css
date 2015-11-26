@@ -188,12 +188,32 @@ form {
 .form{
     height:80vh;
     overflow:hidden;
+    transition:all 0.5s ease;
 }
 
 .hidesection {
     height: 0;
     opacity: 0;
     transition: all 0.5s ease;
+}
+
+/*reveal button*/
+.unhideButton button{
+    position:absolute;
+    top:0;
+    right:0;
+    border:1px solid white;
+    border-radius:3px;
+    background-color:transparent;
+    font-family:'pt_sans_narrowregular', sans-serif;
+    transition:all 0.5s ease;
+}
+
+.hiddenbutton {
+    opacity:0;
+    height:0;
+    width:0;
+    transition:all 0.5s ease;
 }
 
 /*fonts*/

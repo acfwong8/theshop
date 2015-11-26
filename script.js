@@ -736,9 +736,14 @@ $(".submitsearch").on("submit",function (evnt){
     var USPair = FXpair.setPair("USD", currTwo);
 
     $('.form').addClass('hidesection');
-
+    $('.unhideButton button').removeClass('hiddenbutton');
 
 });
+
+$('.unhideButton button').on('click',function(){
+    $('.form').removeClass('hidesection');
+    $('.unhideButton button').addClass('hiddenbutton');
+})
 
 
 
