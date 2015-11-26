@@ -48,11 +48,11 @@ h2 {
 }
 
 h1,h2 {
-    font-family:'Bad Script', cursive;
+    font-family:'bad_scriptregular', cursive;
 }
 
 form {
-    font-family:'PT Sans Narrow', sans-serif;
+    font-family:'pt_sans_narrowregular', sans-serif;
 }
 
 li {
@@ -64,7 +64,7 @@ li {
     /* border-top:2px solid white; */
     width:100%;
     margin-bottom:5%;
-    font-family:'PT Sans Narrow', sans-serif;
+    font-family:'pt_sans_narrowregular', sans-serif;
     transition:all 0.5s ease;
 }
 
@@ -181,4 +181,51 @@ label{
     height:100px;
     display:block;
     background:green;
+}
+
+/*fonts*/
+
+@font-face {
+    font-family: 'bad_scriptregular';
+    src: url('fonts/badscript-regular-webfont.eot');
+    src: url('fonts/badscript-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/badscript-regular-webfont.woff2') format('woff2'),
+         url('fonts/badscript-regular-webfont.woff') format('woff'),
+         url('fonts/badscript-regular-webfont.ttf') format('truetype'),
+         url('fonts/badscript-regular-webfont.svg#bad_scriptregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'pt_sans_narrowbold';
+    src: url('fonts/pt_sans-narrow-web-bold-webfont.eot');
+    src: url('fonts/pt_sans-narrow-web-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/pt_sans-narrow-web-bold-webfont.woff2') format('woff2'),
+         url('fonts/pt_sans-narrow-web-bold-webfont.woff') format('woff'),
+         url('fonts/pt_sans-narrow-web-bold-webfont.ttf') format('truetype'),
+         url('fonts/pt_sans-narrow-web-bold-webfont.svg#pt_sans_narrowbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'pt_sans_narrowregular';
+    src: url('fonts/pt_sans-narrow-web-regular-webfont.eot');
+    src: url('fonts/pt_sans-narrow-web-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/pt_sans-narrow-web-regular-webfont.woff2') format('woff2'),
+         url('fonts/pt_sans-narrow-web-regular-webfont.woff') format('woff'),
+         url('fonts/pt_sans-narrow-web-regular-webfont.ttf') format('truetype'),
+         url('fonts/pt_sans-narrow-web-regular-webfont.svg#pt_sans_narrowregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
 }

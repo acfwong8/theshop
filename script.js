@@ -177,7 +177,7 @@ function displayOffset(TLD){
 }
 
 
-function amazonSearches(TLD,firstCounter) {
+function amazonSearches(TLD,firstCounter,failCounter) {
     amazonRequest.url =  "https://webservices.amazon."+TLD+"/onca/xml"
     
     var currOne = eval("rateInit."+TLD)
@@ -477,6 +477,7 @@ function amazonRequestCode(TLD,currPair,firstCounter,pageSearchLimit){
     console.log($.now());
 
     var itemArray = [];
+    var failCounter = 0;
     
     return {
         setItems:function(){
@@ -579,65 +580,74 @@ function amazonRequestCode(TLD,currPair,firstCounter,pageSearchLimit){
                         id: xml
                     },
                     success: function(response){
-                        // console.log(response);           
-                        for (var i = 0; i<10; i++){
-                            var price = 0;
-                            var currency = "";
-                            var shop = 'amazon';
+                        console.log(response);
+                        if (response === false && m === 1){
+                            setTimeout(function(){
+                                console.log(TLD);
+                                console.log(firstCounter);
+                                amazonSearches(TLD,firstCounter,failCounter);
+                                
+                            },1000);
+                        }else{
+                            for (var i = 0; i<10; i++){
+                                var price = 0;
+                                var currency = "";
+                                var shop = 'amazon';
 
 
 
-                            var title = (response.Items.Item[i].ItemAttributes.Title);
-                            // console.log(title);
-                            if(response.Items.Item[i].OfferSummary.LowestNewPrice){
-                                price = (response.Items.Item[i].OfferSummary.LowestNewPrice.Amount);
-                                if(TLD !== "co.jp"){
-                                    price = price/100;
-                                }
-                                // console.log(price);
-                                currency = (response.Items.Item[i].OfferSummary.LowestNewPrice.CurrencyCode);
-                            } else if (response.Items.Item[i].ItemAttributes.ListPrice){
-                                price = (response.Items.Item[i].ItemAttributes.ListPrice.Amount)
-                                if (TLD !=="co.jp"){
-                                    price = price/100;
-                                }
-                                currency = (response.Items.Item[i].ItemAttributes.ListPrice.CurrencyCode);
-                            } else if (response.Items.Item[i].VariationSummary){
-                                price = (response.Items.Item[i].VariationSummary.LowestPrice.Amount);
-                                if (TLD !=="co.jp"){
-                                    price = price/100;
-                                }
-                                currency = (response.Items.Item[i].VariationSummary.LowestPrice.CurrencyCode);
-                            } else {
-                                price = "";
-                                currency = "No Items";
-                            }
-                            
-                            var link = (response.Items.Item[i].DetailPageURL);
-                            var picture = "";
-                            // if(TLD == "com"){
-                            //     picture = (response.Items.Item[i].LargeImage.URL);
-                            if(response.Items.Item[i].ImageSets){
-                                if(response.Items.Item[i].ImageSets.ImageSet.length > 1){
-                                    picture = (response.Items.Item[i].ImageSets.ImageSet[0].LargeImage.URL);
+                                var title = (response.Items.Item[i].ItemAttributes.Title);
+                                // console.log(title);
+                                if(response.Items.Item[i].OfferSummary.LowestNewPrice){
+                                    price = (response.Items.Item[i].OfferSummary.LowestNewPrice.Amount);
+                                    if(TLD !== "co.jp"){
+                                        price = price/100;
+                                    }
+                                    // console.log(price);
+                                    currency = (response.Items.Item[i].OfferSummary.LowestNewPrice.CurrencyCode);
+                                } else if (response.Items.Item[i].ItemAttributes.ListPrice){
+                                    price = (response.Items.Item[i].ItemAttributes.ListPrice.Amount)
+                                    if (TLD !=="co.jp"){
+                                        price = price/100;
+                                    }
+                                    currency = (response.Items.Item[i].ItemAttributes.ListPrice.CurrencyCode);
+                                } else if (response.Items.Item[i].VariationSummary){
+                                    price = (response.Items.Item[i].VariationSummary.LowestPrice.Amount);
+                                    if (TLD !=="co.jp"){
+                                        price = price/100;
+                                    }
+                                    currency = (response.Items.Item[i].VariationSummary.LowestPrice.CurrencyCode);
                                 } else {
-                                    picture = (response.Items.Item[i].ImageSets.ImageSet.LargeImage.URL);
+                                    price = "";
+                                    currency = "No Items";
                                 }
-                            }
-                            var convcurrency = $('.currency').val().toUpperCase();
-                            var convprice = Math.round(Number(price*rateConvert.getConvert()[currPair])*100)/100;
+                                
+                                var link = (response.Items.Item[i].DetailPageURL);
+                                var picture = "";
+                                // if(TLD == "com"){
+                                //     picture = (response.Items.Item[i].LargeImage.URL);
+                                if(response.Items.Item[i].ImageSets){
+                                    if(response.Items.Item[i].ImageSets.ImageSet.length > 1){
+                                        picture = (response.Items.Item[i].ImageSets.ImageSet[0].LargeImage.URL);
+                                    } else {
+                                        picture = (response.Items.Item[i].ImageSets.ImageSet.LargeImage.URL);
+                                    }
+                                }
+                                var convcurrency = $('.currency').val().toUpperCase();
+                                var convprice = Math.round(Number(price*rateConvert.getConvert()[currPair])*100)/100;
 
-                            itemArray.push({
-                                'currency':currency,
-                                'title':title,
-                                'price':price,
-                                'link':link,
-                                'shop':shop,
-                                'picture':picture,
-                                'convprice':convprice,
-                                'convcurrency':convcurrency,
-                                'TLD':TLD2
-                            });
+                                itemArray.push({
+                                    'currency':currency,
+                                    'title':title,
+                                    'price':price,
+                                    'link':link,
+                                    'shop':shop,
+                                    'picture':picture,
+                                    'convprice':convprice,
+                                    'convcurrency':convcurrency,
+                                    'TLD':TLD2
+                                });
+                            }
                         }
                     }
                 });
