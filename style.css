@@ -51,9 +51,7 @@ h1,h2 {
     font-family:'bad_scriptregular', cursive;
 }
 
-form {
-    font-family:'pt_sans_narrowregular', sans-serif;
-}
+
 
 li {
     text-decoration:none;
@@ -181,6 +179,21 @@ label{
     height:100px;
     display:block;
     background:green;
+}
+
+form {
+    font-family:'pt_sans_narrowregular', sans-serif;
+}
+
+.form{
+    height:80vh;
+    overflow:hidden;
+}
+
+.hidesection {
+    height: 0;
+    opacity: 0;
+    transition: all 0.5s ease;
 }
 
 /*fonts*/

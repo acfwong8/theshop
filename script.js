@@ -199,11 +199,18 @@ function amazonSearches(TLD,firstCounter,failCounter) {
 
     if (firstCounter === 1){
         eval('offsetArray'+TLD2+' = displayOffset(TLD2);');
-        eval('amazonRequests'+TLD2+ '= amazonRequestCode(TLD,userPair.currency,firstCounter,pagesearchLimit);');
-        console.log(amazonRequests);
+        eval('amazonRequests'+TLD2+ '= amazonRequestCode(TLD,userPair.currency,firstCounter,pagesearchLimit,minResults);');
         console.log(firstCounter);
         eval('amazonRequests'+TLD2+'.setItems();');
     }
+
+    var checkItems = setInterval(function(){
+        if(eval('amazonRequests'+TLD2+'.getItems()').length <= minResults){
+            eval('amazonRequests'+TLD2+'.setItems();');
+        } else {
+            stopCheck();
+        }
+    },5000);
     eval('console.log(amazonRequests'+TLD2+'.getItems());');
 
     var finishSearch = setInterval(function(){
@@ -247,6 +254,9 @@ function amazonSearches(TLD,firstCounter,failCounter) {
 
     function stopSearch(){
         clearInterval(finishSearch);
+    }
+    function stopCheck(){
+        clearInterval(checkItems);
     }
 
 }
@@ -447,7 +457,7 @@ function ebayRequestCode(firstCounter){
 
 
 // amazonRequest.encode = function(TLD,currPair,firstCounter){
-function amazonRequestCode(TLD,currPair,firstCounter,pageSearchLimit){
+function amazonRequestCode(TLD,currPair,firstCounter,pageSearchLimit,minResults){
     var TLD2 = "";
     if (TLD == 'co.jp' || TLD == 'co.uk'){
         TLD2 = TLD.replace('.','')
@@ -460,16 +470,15 @@ function amazonRequestCode(TLD,currPair,firstCounter,pageSearchLimit){
         var $h1 = $("<h1>").text('Listings from Amazon'+'.'+TLD);
         $div.append($h1);
         $('#stores').append($div);
-        $div.hide();
 
     }
     // console.log(firstCounter);
     var $ul = $("<ul>").addClass('storelist listpage');
     $('#amazon'+TLD2).append($ul);
 
-    if(firstCounter === 1){
-        $div.fadeIn(800);
-    }
+    // if(firstCounter === 1){
+    //     $div.fadeIn(800);
+    // }
 
     var searchAZ = $(".indices").val();
     var keyword = $(".itemsearch").val();
@@ -581,16 +590,12 @@ function amazonRequestCode(TLD,currPair,firstCounter,pageSearchLimit){
                     },
                     success: function(response){
                         console.log(response);
-                        console.log(m);
-                        if (response === false && m === 1){
-                            setTimeout(function(){
-                                console.log(TLD);
-                                console.log(firstCounter);
-                                amazonSearches(TLD,firstCounter,failCounter);
-                                
-                            },1000);
+                        if (response === false && itemArray.length <= minResults){
+                            
+                        }else if(response === false) {
+                            
                         }else{
-                            for (var i = 0; i<10; i++){
+                        for (var i = 0; i<10; i++){
                                 var price = 0;
                                 var currency = "";
                                 var shop = 'amazon';
@@ -729,6 +734,8 @@ $(".submitsearch").on("submit",function (evnt){
     var theCurrency = FXgetter.getFX();
     var userPair = FXpair.setPair(currOne, currTwo);
     var USPair = FXpair.setPair("USD", currTwo);
+
+    $('.form').addClass('hidesection');
 
 
 });
