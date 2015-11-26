@@ -199,7 +199,7 @@ function amazonSearches(TLD,firstCounter,failCounter) {
 
     if (firstCounter === 1){
         eval('offsetArray'+TLD2+' = displayOffset(TLD2);');
-        eval('amazonRequests'+TLD2+ '= amazonRequestCode(TLD2,userPair.currency,firstCounter,pagesearchLimit);');
+        eval('amazonRequests'+TLD2+ '= amazonRequestCode(TLD,userPair.currency,firstCounter,pagesearchLimit);');
         console.log(amazonRequests);
         console.log(firstCounter);
         eval('amazonRequests'+TLD2+'.setItems();');
@@ -581,6 +581,7 @@ function amazonRequestCode(TLD,currPair,firstCounter,pageSearchLimit){
                     },
                     success: function(response){
                         console.log(response);
+                        console.log(m);
                         if (response === false && m === 1){
                             setTimeout(function(){
                                 console.log(TLD);
