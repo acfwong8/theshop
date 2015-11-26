@@ -227,15 +227,15 @@ function amazonSearches(TLD,firstCounter) {
                     if($('.minPrice').val() <= a[k].convprice){
                         productDisplay(a[k].shop,a[k].title,a[k].price,a[k].convprice,a[k].currency,a[k].convcurrency,a[k].link,a[k].picture,a[k].TLD,firstCounter);
                     } else {
-                        console.log(offsetArray.setOffset());
-                        displayEnd = Math.min(pageDisplayLimit * (firstCounter) + offsetArray.getOffset(),a.length);
+                        console.log(eval('offsetArray'+TLD2+'.setOffset()'));
+                        displayEnd = Math.min(pageDisplayLimit * (firstCounter) + eval('offsetArray'+TLD2+'.getOffset()'),a.length);
                     }
                 } else if($('.maxPrice').val()){
                     if($('.maxPrice').val() >= a[k].convprice){
                         productDisplay(a[k].shop,a[k].title,a[k].price,a[k].convprice,a[k].currency,a[k].convcurrency,a[k].link,a[k].picture,a[k].TLD,firstCounter);
                     } else{
-                        console.log(offsetArray.setOffset());
-                        displayEnd = Math.min(pageDisplayLimit * (firstCounter) + offsetArray.getOffset(),a.length);
+                        console.log(eval('offsetArray'+TLD2+'.setOffset()'));
+                        displayEnd = Math.min(pageDisplayLimit * (firstCounter) + eval('offsetArray'+TLD2+'.getOffset()'),a.length);
                     }
                 } else {
                     productDisplay(a[k].shop,a[k].title,a[k].price,a[k].convprice,a[k].currency,a[k].convcurrency,a[k].link,a[k].picture,a[k].TLD,firstCounter);                    
