@@ -9,9 +9,7 @@
         <link href="style.css" rel="stylesheet">        
     </head>
     <body>
-        <div class="unhideButton">
-            <button class="hiddenbutton">Unhide</button>
-        </div>
+        <button class="unhideButton hiddenbutton">Unhide Search</button>
         <div class="title">
             <h2>Where should I buy?<em> Simplified</em></h2>
         </div>
@@ -46,13 +44,13 @@
                 <p>Search regions:</p>
                 <p>Amazon:
                     <input type="checkbox" class="checkbox checkbox1" id="USTLD" name="USTLD" value="com" checked><label for="USTLD">.com </label>
-                    <input type="checkbox" class="checkbox checkbox2" id="CATLD" name="CATLD" value="ca"> <label for="CATLD">.ca </label>
-                    <input type="checkbox" class="checkbox checkbox3" id="DETLD" name="DETLD" value="de"><label for="DETLD">.de </label>
+                    <input type="checkbox" class="checkbox checkbox2" id="CATLD" name="CATLD" value="ca" checked> <label for="CATLD">.ca </label>
+                    <input type="checkbox" class="checkbox checkbox3" id="DETLD" name="DETLD" value="de" checked><label for="DETLD">.de </label>
                     <input type="checkbox" class="checkbox checkbox4" id="JPTLD" name="JPTLD" value="co.jp"><label for="JPTLD">.co.jp </label>
                     <input type="checkbox" class="checkbox checkbox5" id="UKTLD" name="UKTLD" value="co.uk"><label for="UKTLD">.co.uk </label>                
                 </p>
                 <p>eBay:
-                    <input type="checkbox" class="checkbox ebaycheck ebaycheck1" id="ebayTLD" name="ebayTLD" value=".com" checked><label for="ebayTLD">eBay Global Site</label>
+                    <input type="checkbox" class="checkbox ebaycheck ebaycheck1" id="ebayTLD" name="ebayTLD" value=".com"><label for="ebayTLD">eBay Global Site</label>
                 </p>
             </form>
         </div>
@@ -85,7 +83,6 @@
         <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.41.min.js"></script>
 
         <script src="script.js"></script>
-        <script type ="text/javascript" src="amazonparse.php"></script>
         
     </body>
 </html>

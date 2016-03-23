@@ -1,11 +1,11 @@
 *{
     box-sizing:border-box;
     background:;
-    color:white;
+    color:black;
 }
 
 body{
-    background:#77D;
+    background:white;
     text-align:center;
     border-bottom:none;
 }
@@ -19,7 +19,7 @@ h1 {
 
 a {
     text-decoration: none;
-    color:#ccc;
+    color:#999;
     transition: all 0.25s ease;
     font-size:1rem;
     height:5vh;
@@ -91,7 +91,7 @@ li {
 .store {
     float:left;
     background:rgba(0,0,0,0.3);
-    border:2px solid white;
+    border:2px solid black;
 }
 
 #stores{
@@ -128,7 +128,7 @@ img {
 }
 
 .loadstuff{
-    border:1px solid white;
+    border:1px solid black;
     transition:all 0.5s ease;
     border-radius:3px;
 }
@@ -139,7 +139,7 @@ img {
 }
 
 .submitsearch input{
-    border:1px solid white;
+    border:1px solid black;
     border-radius: 3px;
 }
 
@@ -151,11 +151,11 @@ img {
 
 
 label{
-    border:1px solid white;
+    border:1px solid black;
     border-radius:3px;
     margin:0 1%;
     padding:0 3px;
-    box-shadow:10px 10px 10px black;
+    box-shadow:5px 5px 5px black;
     transition: all 0.5s ease;
 }
 
@@ -165,7 +165,8 @@ label{
 }
 
 .checkbox:checked + label, .ebaycheck:checked + label{
-    background:red;
+                               background:red;
+                               color: white;
     box-shadow:none;
     transition: all 0.5s ease;
 }
@@ -186,7 +187,7 @@ form {
 }
 
 .form{
-    height:80vh;
+    height:40vh;
     overflow:hidden;
     transition:all 0.5s ease;
 }
@@ -198,11 +199,11 @@ form {
 }
 
 /*reveal button*/
-.unhideButton button{
+.unhideButton{
     position:absolute;
     top:0;
     right:0;
-    border:1px solid white;
+    border:1px solid black;
     border-radius:3px;
     background-color:transparent;
     font-family:'pt_sans_narrowregular', sans-serif;
